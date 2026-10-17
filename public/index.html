@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Book an Appointment</title>
+  <style>
+    :root { --bg:#faf8f5; --card:#fff; --ink:#1f2328; --muted:#6b7280; --accent:#0f766e; --line:#e5e1da; --bad:#b42318; }
+    * { box-sizing: border-box; }
+    body { margin:0; font:16px/1.5 system-ui, sans-serif; background:var(--bg); color:var(--ink); }
+    main { max-width: 720px; margin: 0 auto; padding: 24px 16px 64px; }
+    h1 { margin: 0 0 4px; font-size: 1.6rem; }
+    h2 { font-size: 1.1rem; margin: 0 0 12px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-top:16px; }
+    label { display:block; font-size:.85rem; color:var(--muted); margin:8px 0 4px; }
+    input, select, button { font:inherit; padding:8px 10px; border-radius:8px; border:1px solid var(--line); width:100%; }
+    button { background:var(--accent); color:#fff; border:0; cursor:pointer; margin-top:12px; }
+    button.secondary { background:#fff; color:var(--ink); border:1px solid var(--line); width:auto; margin:0; padding:4px 10px; }
+    .slots { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+    .slots button { width:auto; margin:0; padding:6px 12px; }
+    .slots button[disabled] { background:#eee; color:#999; text-decoration:line-through; cursor:not-allowed; }
+    .slots button.selected { outline:3px solid #99f6e4; }
+    .row { display:flex; gap:8px; align-items:center; justify-content:space-between; padding:8px 0; border-top:1px solid var(--line); }
+    .row:first-child { border-top:0; }
+    .msg { margin-top:12px; padding:10px; border-radius:8px; background:#ecfdf5; }
+    .msg.err { background:#fef3f2; color:var(--bad); }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .muted { color:var(--muted); font-size:.9rem; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Book an appointment</h1>
+  <p class="muted" id="who">Booking as guest</p>
+
+  <section class="card" id="book">
+    <h2>1. Choose a provider and time</h2>
+    <label for="provider">Provider</label>
+    <select id="provider"></select>
+    <label for="date">Date</label>
+    <input type="date" id="date">
+    <div class="slots" id="slots"></div>
+
+    <h2 style="margin-top:20px">2. Who is it for?</h2>
+    <div class="grid">
+      <div><label for="name">Attendee name</label><input id="name" autocomplete="name"></div>
+      <div><label for="email">Contact email</label><input id="email" type="email" autocomplete="email"></div>
+    </div>
+    <button id="confirm">Book appointment</button>
+    <div id="bookMsg"></div>
+  </section>
+
+  <section class="card" id="mine" hidden>
+    <h2>My appointments</h2>
+    <div id="list"></div>
+  </section>
+
+  <section class="card" id="guest">
+    <h2>Cancel a guest booking</h2>
+    <div class="grid">
+      <div><label for="apptId">Appointment ID</label><input id="apptId"></div>
+      <div><label for="token">Manage code</label><input id="token"></div>
+    </div>
+    <button id="cancelGuest">Cancel appointment</button>
+    <div id="guestMsg"></div>
+  </section>
+
+  <section class="card" id="account">
+    <h2>Account (optional)</h2>
+    <div class="grid">
+      <div><label for="aName">Name (sign up only)</label><input id="aName"></div>
+      <div><label for="aEmail">Email</label><input id="aEmail" type="email"></div>
+      <div><label for="aPass">Password (8+ characters)</label><input id="aPass" type="password"></div>
+    </div>
+    <div class="grid">
+      <button id="register">Register</button>
+      <button id="login">Log in</button>
+    </div>
+    <button id="logout" class="secondary" hidden style="margin-top:12px">Log out</button>
+    <div id="accMsg"></div>
+  </section>
+</main>
+<script src="app.js" type="module"></script>
+</body>
+</html>
