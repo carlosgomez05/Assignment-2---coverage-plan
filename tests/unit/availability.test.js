@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { overlaps, hasConflict, slotsForDay } from '../../src/domain/availability.js';
+import { overlaps, hasConflict, slotsForDay, findSlot } from '../../src/domain/availability.js';
 
 // Test data shared by the slot tests. Each test builds its own copy, so no test can affect another.
 const MONDAY = '2026-10-19';
@@ -161,5 +161,55 @@ describe('slotsForDay', () => {
 
     // Assert
     expect(slots).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// findSlot(provider, date, start)
+// ---------------------------------------------------------------------------
+describe('findSlot', () => {
+  it('findSlot_TimeOnGrid_ReturnsSlot', () => {
+    // Arrange
+    const provider = mondayProvider();
+
+    // Act
+    const slot = findSlot(provider, MONDAY, '10:00');
+
+    // Assert
+    expect(slot).toEqual({ start: '10:00', end: '10:30' });
+  });
+
+  it('findSlot_LastSlotOfDay_ReturnsSlot', () => {
+    // Arrange
+    const provider = mondayProvider();
+
+    // Act
+    const slot = findSlot(provider, MONDAY, '16:30');
+
+    // Assert
+    expect(slot).toEqual({ start: '16:30', end: '17:00' });
+  });
+
+  // Interpretation: 17:00 is closing time, so a slot starting then would end after closing.
+  it('findSlot_ClosingTime_ReturnsUndefined', () => {
+    // Arrange
+    const provider = mondayProvider();
+
+    // Act
+    const slot = findSlot(provider, MONDAY, '17:00');
+
+    // Assert
+    expect(slot).toBeUndefined();
+  });
+
+  it('findSlot_TimeOffGrid_ReturnsUndefined', () => {
+    // Arrange
+    const provider = mondayProvider();
+
+    // Act
+    const slot = findSlot(provider, MONDAY, '10:15');
+
+    // Assert
+    expect(slot).toBeUndefined();
   });
 });
