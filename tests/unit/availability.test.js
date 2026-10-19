@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { overlaps, hasConflict, slotsForDay, findSlot } from '../../src/domain/availability.js';
+import { overlaps, hasConflict, slotsForDay, findSlot, slotsWithStatus } from '../../src/domain/availability.js';
 
 // Test data shared by the slot tests. Each test builds its own copy, so no test can affect another.
 const MONDAY = '2026-10-19';
@@ -211,5 +211,45 @@ describe('findSlot', () => {
 
     // Assert
     expect(slot).toBeUndefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// slotsWithStatus(provider, date, booked)
+// ---------------------------------------------------------------------------
+describe('slotsWithStatus', () => {
+  it('slotsWithStatus_NoBookings_AllSlotsAvailable', () => {
+    // Arrange
+    const provider = mondayProvider();
+
+    // Act
+    const slots = slotsWithStatus(provider, MONDAY, []);
+
+    // Assert
+    expect(slots.every((s) => s.available)).toBe(true);
+  });
+
+  it('slotsWithStatus_OneBooking_OnlyThatSlotUnavailable', () => {
+    // Arrange
+    const provider = mondayProvider();
+    const booked = [{ start: '10:00', end: '10:30' }];
+
+    // Act
+    const slots = slotsWithStatus(provider, MONDAY, booked);
+
+    // Assert
+    expect(slots.filter((s) => !s.available).map((s) => s.start)).toEqual(['10:00']);
+  });
+
+  it('slotsWithStatus_BookingOutsideHours_AllSlotsAvailable', () => {
+    // Arrange
+    const provider = mondayProvider();
+    const booked = [{ start: '18:00', end: '18:30' }];
+
+    // Act
+    const slots = slotsWithStatus(provider, MONDAY, booked);
+
+    // Assert
+    expect(slots.every((s) => s.available)).toBe(true);
   });
 });
