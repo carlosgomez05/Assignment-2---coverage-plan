@@ -1,5 +1,15 @@
 import { describe, it, expect } from 'vitest';
-import { overlaps, hasConflict } from '../../src/domain/availability.js';
+import { overlaps, hasConflict, slotsForDay } from '../../src/domain/availability.js';
+
+// Test data shared by the slot tests. Each test builds its own copy, so no test can affect another.
+const MONDAY = '2026-10-19';
+const SUNDAY = '2026-10-18';
+
+// A provider open Mondays 09:00-17:00 with slots of the given length (30 minutes unless stated).
+const mondayProvider = (slotMinutes = 30) => ({
+  slotMinutes,
+  weeklyHours: { 1: [{ start: '09:00', end: '17:00' }] },
+});
 
 // ---------------------------------------------------------------------------
 // overlaps(aStart, aEnd, bStart, bEnd) - times are minutes after midnight
@@ -100,5 +110,56 @@ describe('hasConflict', () => {
 
     // Assert
     expect(result).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// slotsForDay(provider, date)
+// ---------------------------------------------------------------------------
+describe('slotsForDay', () => {
+  it('slotsForDay_OpenWeekday_ReturnsSixteenSlots', () => {
+    // Arrange
+    const provider = mondayProvider();
+
+    // Act
+    const slots = slotsForDay(provider, MONDAY);
+
+    // Assert
+    expect(slots).toHaveLength(16);
+  });
+
+  // Block durations: a block that would run past closing time (17:00) must not be offered.
+  it('slotsForDay_FortyFiveMinuteSlots_LastSlotEndsBeforeClosing', () => {
+    // Arrange
+    const provider = mondayProvider(45);
+
+    // Act
+    const slots = slotsForDay(provider, MONDAY);
+
+    // Assert
+    expect(slots.at(-1)).toEqual({ start: '15:45', end: '16:30' });
+  });
+
+  it('slotsForDay_ClosedDay_ReturnsNoSlots', () => {
+    // Arrange
+    const provider = mondayProvider();
+
+    // Act
+    const slots = slotsForDay(provider, SUNDAY);
+
+    // Assert
+    expect(slots).toEqual([]);
+  });
+
+  // Interpretation: a date that does not exist (February 30) has no slots.
+  it('slotsForDay_NonExistentDate_ReturnsNoSlots', () => {
+    // Arrange
+    const provider = mondayProvider();
+
+    // Act
+    const slots = slotsForDay(provider, '2026-02-30');
+
+    // Assert
+    expect(slots).toEqual([]);
   });
 });
