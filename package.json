@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node src/server.js",
     "test": "node --test \"tests/**/*.test.js\"",
-    "test:unit": "node --test \"tests/unit/**/*.test.js\"",
+    "test:unit": "vitest run tests/unit",
     "test:integration": "node --test \"tests/integration/**/*.test.js\""
   },
   "dependencies": {
