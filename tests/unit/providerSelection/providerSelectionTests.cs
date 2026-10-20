@@ -55,6 +55,18 @@ public class ProviderSelectionTests
         Assert.That(offeredService, Is.False);
     }
 
+    // A 90-minute service needs two 60-minute slots. The code refuses anything that isn't a whole multiple.
+    [Test]
+    public void OffersService_NinetyMinuteServiceOnASixtyMinuteSlot_IsOfferedBecauseTwoSlotsFit()
+    {
+        var provider = Weekday("Sam", slotMinutes: 60);
+        var plusService = new ServiceOffering("colour-plus", "Colour + haircut", 90);
+
+        var offered = ProviderSelection.OffersService(provider, plusService);
+
+        Assert.That(offered, Is.True);
+    }
+
     // A provider with zero slot length cannot offer any service.
     [Test]
     public void OffersService_ZeroSlotLength_ReturnsFalse()
@@ -170,6 +182,45 @@ public class ProviderSelectionTests
         Assert.That(offered, Is.Empty);
     }
 
+    /* SLOTS AVAILABILITY */
+
+    // Back-to-back bookings are allowed (e.g. 09:30-10:00 stays free after 09:00-09:30)
+    [Test]
+    public void SlotsWithStatus_BookingEndsWhenNextSlotStarts_LeavesNextSlotAvailable()
+    {
+        var provider = WithHours("Alex", 30, DayOfWeek.Thursday, "12:30", "17:00");
+        var booked = new[] { new TimeWindow(At("16:00"), At("16:30")) };
+
+        var slots = ProviderSelection.SlotsWithStatus(provider, DayOfWeek.Thursday, booked);
+
+        Assert.That(slots[1].Available, Is.True);
+    }
+
+    // A booked slot in between two free slots is marked as unavailable and the other slots remain available.
+    [Test]
+    public void SlotsWithStatus_BookedSlotInBetweenTwoFreeSlots_MarksBookedSlotAsUnavailable()
+    {
+        var provider = WithHours("Alex", 30, DayOfWeek.Thursday, "12:30", "17:00");
+        var booked = new[] { new TimeWindow(At("13:00"), At("13:30")) };
+
+        var slots = ProviderSelection.SlotsWithStatus(provider, DayOfWeek.Thursday, booked);
+
+        Assert.That(slots[0].Available, Is.True);
+        Assert.That(slots[1].Available, Is.False);
+        Assert.That(slots[2].Available, Is.True);
+    }
+
+    // Bookings starting at the closing time should not be allowed
+    [Test]
+    public void SlotsWithStatus_BookingStartsAtClosingTime_MarksSlotAsUnavailable()
+    {
+        var provider = WithHours("Sam", 60, DayOfWeek.Thursday, "09:00", "17:00");
+        var booked = new[] { new TimeWindow(At("16:00"), At("17:00")) };
+
+        var slots = ProviderSelection.SlotsWithStatus(provider, DayOfWeek.Thursday, booked);
+
+        Assert.That(slots[7].Available, Is.False);
+    }
 
 
     // Helpers  
