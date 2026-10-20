@@ -3,6 +3,6 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     include: ['tests/unit/**/*.test.js'],
-    coverage: { include: ['src/domain/**', 'src/services/**'] },
+    coverage: { include: ['src/domain/**/*.js', 'src/services/**/*.js'] },
   },
 });
