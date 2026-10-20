@@ -136,6 +136,12 @@ describe('createAppointment', () => {
     expect(act).toThrowError(expect.objectContaining({ status: 400 }));
   });
 
+  it('create_RequestBodyMissing_ThrowsBadRequest', () => {
+    const act = () => service.create(patron, undefined);
+
+    expect(act).toThrowError(expect.objectContaining({ status: 400 }));
+  });
+
   it('create_ProviderBooksOnAnotherProvidersCalendar_ThrowsForbidden', () => {
     const other = { id: 'u2', name: 'Sam', role: 'provider', providerId: 'prov-2' };
 
