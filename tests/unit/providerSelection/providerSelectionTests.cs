@@ -60,8 +60,27 @@ public class ProviderSelectionTests
         Assert.That(offeredService, Is.False);
     }
 
+    /* PROVIDERS FOR */
+    [Test]
+    public void ProvidersFor_MultipleProvidersWithSameService_ReturnsTheProviderWithTheShortestSlotLengthFirst() // The provider with the shortest slot length is offered first, even if the other provider has a longer slot length that can also accommodate the service. 
+    {
+        var providerHalfHour = Weekday("Alex", slotMinutes: 30);
+        var providerOneHour = Weekday("Sam", slotMinutes: 60);
 
+        var providers = ProviderSelection.ProvidersFor(new[] { providerHalfHour, providerOneHour }, Haircut);
 
+        Assert.That(providers.Select(p => p.Id), Is.EqualTo(new[] { "Alex" }));
+    }
+
+    [Test]
+    public void ProvidersFor_NoProvidersOfferTheService_ReturnsEmptyList() // If no providers offer the service, an empty list is returned.
+    {
+        var providerOneHour = Weekday("Sam", slotMinutes: 60);
+
+        var providers = ProviderSelection.ProvidersFor(new[] { providerOneHour }, Trim);
+
+        Assert.That(providers, Is.Empty);
+    }
 
     // Helpers  
     private static TimeOnly At(string time) => TimeOnly.ParseExact(time, "HH:mm", System.Globalization.CultureInfo.InvariantCulture);
