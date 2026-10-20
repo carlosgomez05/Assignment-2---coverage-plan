@@ -1,0 +1,1 @@
+dotnet test "tests/unit/providerSelection/BookingApp.UnitTests.sln"
