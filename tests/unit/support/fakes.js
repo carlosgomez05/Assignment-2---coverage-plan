@@ -36,7 +36,6 @@ export const fixedClock = (now) => () => new Date(now.getTime());
 
 // 2030-01-07 is a Monday; every provider below works Monday 09:00-17:00.
 export const MONDAY = '2030-01-07';
-export const TUESDAY = '2030-01-08';
 export const SUNDAY = '2030-01-06';
 
 export const makeProvider = (overrides = {}) => ({
