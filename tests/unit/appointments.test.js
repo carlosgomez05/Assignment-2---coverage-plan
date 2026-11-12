@@ -1,9 +1,8 @@
-import { describe, test } from 'node:test';
-import { expect } from 'chai';
+import { describe, test, expect } from 'vitest';
 import { AppError } from '../../src/errors.js';
-import { buildAppointmentService, guestInput, TODAY } from './support/fakes.js';
+import { buildAppointmentService, guestInput, TODAY } from './support/appointmentFakes.js';
 
-// Fixed "now" in these tests is Monday 2026-10-19 12:00 (see support/fakes.js).
+// Fixed "now" in these tests is Monday 2026-10-19 12:00 (see support/appointmentFakes.js).
 
 // ---------- Area: Appointment rules ----------
 describe('create', () => {
@@ -16,7 +15,7 @@ describe('create', () => {
     const appt = service.create(null, input);
 
     // Assert
-    expect({ status: appt.status, start: appt.start, end: appt.end }).to.deep.equal({
+    expect({ status: appt.status, start: appt.start, end: appt.end }).toEqual({
       status: 'booked',
       start: '10:00',
       end: '10:30',
@@ -33,7 +32,8 @@ describe('create', () => {
     const act = () => service.create(null, guestInput({ date: TODAY, start: '12:00' }));
 
     // Assert
-    expect(act).to.throw(AppError).with.property('code', 'IN_THE_PAST');
+    expect(act).toThrow(AppError);
+    expect(act).toThrow(expect.objectContaining({ code: 'IN_THE_PAST' }));
   });
 
   // Requirement: invalid input is rejected with a 400 "bad request", not an unhandled crash.
@@ -45,7 +45,8 @@ describe('create', () => {
     const act = () => service.create(null, undefined);
 
     // Assert
-    expect(act).to.throw(AppError).with.property('status', 400);
+    expect(act).toThrow(AppError);
+    expect(act).toThrow(expect.objectContaining({ status: 400 }));
   });
 });
 
@@ -59,7 +60,7 @@ describe('cancel', () => {
     const result = service.cancel(null, booked.id, booked.manageToken);
 
     // Assert
-    expect(result.status).to.equal('cancelled');
+    expect(result.status).toBe('cancelled');
   });
 
   // Interpretation: cancelling an already cancelled appointment is a harmless no-op, not an error.
@@ -73,7 +74,7 @@ describe('cancel', () => {
     const result = service.cancel(null, booked.id, booked.manageToken);
 
     // Assert
-    expect(result.status).to.equal('cancelled');
+    expect(result.status).toBe('cancelled');
   });
 
   test('cancel_GuestWithWrongManageToken_ThrowsForbidden', () => {
@@ -85,6 +86,7 @@ describe('cancel', () => {
     const act = () => service.cancel(null, booked.id, 'wrong-token');
 
     // Assert
-    expect(act).to.throw(AppError).with.property('status', 403);
+    expect(act).toThrow(AppError);
+    expect(act).toThrow(expect.objectContaining({ status: 403 }));
   });
 });
