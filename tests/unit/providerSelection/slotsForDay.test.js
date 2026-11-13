@@ -1,7 +1,7 @@
 // Provider selection, part 1: which slots a provider can be booked for on a day.
 // Unit under test: slotsForDay() in src/domain/availability.js
 import assert from "node:assert/strict";
-import test from "node:test";
+import { test } from "vitest";
 import { slotsForDay } from "../../../src/domain/availability.js";
 
 // Monday 23 March 2026 is weekday 1; Saturday 21 March is weekday 6.

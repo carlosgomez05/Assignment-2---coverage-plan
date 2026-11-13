@@ -2,7 +2,7 @@
 // booked for on this date", including which bookings count.
 // Unit under test: createProviderService(...).slots() in src/services/providerService.js
 import assert from "node:assert/strict";
-import test from "node:test";
+import { test } from "vitest";
 import { createProviderService } from "../../../src/services/providerService.js";
 import { createMemoryStore } from "../../../src/repositories/memoryStore.js";
 

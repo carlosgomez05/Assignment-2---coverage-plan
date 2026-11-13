@@ -1,7 +1,7 @@
 // Provider selection, part 2: which of those slots are still free.
 // Unit under test: slotsWithStatus() in src/domain/availability.js
 import assert from "node:assert/strict";
-import test from "node:test";
+import { test } from "vitest";
 import { slotsWithStatus } from "../../../src/domain/availability.js";
 
 const MONDAY = "2026-03-23";
