@@ -8,11 +8,15 @@
   },
   "scripts": {
     "start": "node src/server.js",
-    "test": "node --test \"tests/**/*.test.js\"",
-    "test:unit": "node --test \"tests/unit/**/*.test.js\"",
-    "test:integration": "node --test \"tests/integration/**/*.test.js\""
+    "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^5.0.5",
+    "vitest": "^5.0.5"
   }
 }
