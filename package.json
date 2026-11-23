@@ -10,12 +10,14 @@
     "start": "node src/server.js",
     "test": "vitest run",
     "test:unit": "vitest run tests/unit",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "express": "^4.19.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.49.0",
     "@vitest/coverage-v8": "^5.0.5",
     "vitest": "^5.0.5"
   }
