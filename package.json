@@ -12,6 +12,7 @@
     "test:unit": "vitest run tests/unit",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test"
+    "test:api": "vitest run -c vitest.api.config.js"
   },
   "dependencies": {
     "express": "^4.19.2"
