@@ -10,10 +10,12 @@ import { test, expect } from '@playwright/test';
 //  3. guest cancels a booking           R2 availability freed on cancel
 //  4. second guest, taken slot          R1 double booking (critical), the booking-integrity core
 
-// Next occurrence of a weekday (1 = Monday ... 6 = Saturday), optionally weeks ahead.
+// Next occurrence of a weekday (1 = Monday ... 6 = Saturday). When today is already
+// that weekday, jump to next week so the chosen slot is always in the future.
 const nextWeekday = (day, weeksAhead = 0) => {
   const d = new Date();
-  d.setDate(d.getDate() + ((day - d.getDay() + 7) % 7) + weeksAhead * 7);
+  const offset = (day - d.getDay() + 7) % 7 || 7;
+  d.setDate(d.getDate() + offset + weeksAhead * 7);
   const pad = (n) => String(n).padStart(2, '0');
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 };

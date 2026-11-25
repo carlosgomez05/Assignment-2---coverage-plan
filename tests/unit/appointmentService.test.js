@@ -48,7 +48,10 @@ describe('createAppointment', () => {
     expect(act).toThrowError(expect.objectContaining({ code: 'IN_THE_PAST' }));
   });
 
-  it('create_RequestBodyMissing_ThrowsBadRequest', () => {
+  // DEFECT-5: create() with a missing request body crashes with a TypeError
+  // instead of a 400. Wrapped in it.fails (team convention, see
+  // tests/api/knownDefects.api.test.js) until the defect is fixed.
+  it.fails('create_RequestBodyMissing_ThrowsBadRequest', () => {
     const act = () => service.create(patron, undefined);
 
     expect(act).toThrowError(expect.objectContaining({ status: 400 }));

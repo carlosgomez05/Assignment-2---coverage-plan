@@ -152,7 +152,8 @@ describe('slotsForDay', () => {
   });
 
   // Interpretation: a date that does not exist (February 30) has no slots.
-  it('slotsForDay_NonExistentDate_ReturnsNoSlots', () => {
+  // DEFECT-6: the date rolls over to a real day, so it.fails until fixed.
+  it.fails('slotsForDay_NonExistentDate_ReturnsNoSlots', () => {
     // Arrange
     const provider = mondayProvider();
 

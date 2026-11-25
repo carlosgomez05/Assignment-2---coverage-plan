@@ -37,7 +37,9 @@ describe('register', () => {
     expect(act).toThrowError(expect.objectContaining({ status: 400 }));
   });
 
-  it('register_WhitespaceOnlyName_ThrowsBadRequest', () => {
+  // DEFECT-7: a whitespace-only name is accepted instead of a 400.
+  // Wrapped in it.fails (team convention) until the defect is fixed.
+  it.fails('register_WhitespaceOnlyName_ThrowsBadRequest', () => {
     const act = () => auth.register(valid({ name: '   ' }));
 
     expect(act).toThrowError(expect.objectContaining({ status: 400 }));
