@@ -9,6 +9,6 @@ export default defineConfig({
     fileParallelism: false,
     testTimeout: 15000,
     reporters: ['default', 'junit'],
-    outputFile: { junit: 'test-results/api-junit.xml' },
+    outputFile: { junit: 'reports/api-junit.xml' },
   },
 });
